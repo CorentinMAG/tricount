@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TriCountAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const TriCountAppBar({super.key});
+  String title;
+  void Function() onPressedQRCode;
+  TabBar? bottom;
+  TriCountAppBar({super.key, this.title = "Tricount", required this.onPressedQRCode, this.bottom});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => bottom != null ? const Size.fromHeight(kToolbarHeight) * 2  : const Size.fromHeight(kToolbarHeight);
 
   @override
   State<TriCountAppBar> createState() => _TriCountAppBarState();
@@ -13,7 +16,6 @@ class TriCountAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _TriCountAppBarState extends State<TriCountAppBar> {
   bool _isSearchMode = false;
   TextEditingController _searchController = TextEditingController();
-  String _title = "Tricount";
 
   void onPressedSearch() {
     setState(() {
@@ -36,15 +38,21 @@ class _TriCountAppBarState extends State<TriCountAppBar> {
                 hintText: "Search...",
                 border: InputBorder.none,
               ),
-            onChanged: onChangedText,
+              onChanged: onChangedText,
             )
-          : Text(_title),
+          : Text(widget.title),
+      bottom: widget.bottom,
       actions: [
         IconButton(
-            onPressed: onPressedSearch,
-            icon: _isSearchMode
-                ? const Icon(Icons.cancel)
-                : const Icon(Icons.search))
+          onPressed: onPressedSearch,
+          icon: _isSearchMode
+              ? const Icon(Icons.cancel)
+              : const Icon(Icons.search),
+        ),
+        IconButton(
+          onPressed: widget.onPressedQRCode,
+          icon: const Icon(Icons.qr_code)
+        ),
       ],
     );
   }

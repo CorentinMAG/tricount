@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
       title: "Tricount",
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
-      home: const HomeScreen()
+      home: HomeScreen()
     );
   }
 }

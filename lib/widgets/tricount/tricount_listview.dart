@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tricount/widgets/tricount_tile.dart';
+import 'package:tricount/widgets/tricount/tricount_tile.dart';
 
 class TriCountListView extends StatefulWidget {
   const TriCountListView({super.key});
