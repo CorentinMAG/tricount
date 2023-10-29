@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tricount/screens/forgot_password.dart';
 import 'package:tricount/screens/register.dart';
 import 'package:tricount/screens/tricounts.dart';
+import 'package:tricount/utils/functions.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,20 +18,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isHidden = true;
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Please enter your email";
-    }
-    if (!value.contains('@')) {
-      return "Invalid email address";
-    }
-    return null;
-  }
-
   void onTapEye() {
     setState(() {
       _isHidden = !_isHidden;
     });
+  }
+
+  void onLogin() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TriCountsScreen(),
+        ),
+      );
+    }
   }
 
   @override
@@ -61,35 +64,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                   ),
-                  validator: _validateEmail,
+                  validator: validateEmail,
                   onSaved: (value) => _email = value,
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
                   decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: GestureDetector(
-                          onTap: onTapEye,
-                          child: _isHidden
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility))),
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: GestureDetector(
+                      onTap: onTapEye,
+                      child: _isHidden
+                          ? const Icon(Icons.visibility_off)
+                          : const Icon(Icons.visibility),
+                    ),
+                  ),
                   obscureText: _isHidden,
                   onSaved: (value) => _password = value,
                 ),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TriCountsScreen(),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: onLogin,
                   child: const Text('Login'),
                 ),
                 const SizedBox(height: 20.0),
