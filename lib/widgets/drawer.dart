@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tricount/screens/login.dart';
+import 'package:tricount/services/supabase_service.dart';
+import 'package:tricount/services/shared_preferences_service.dart';
 
 class TriCountDrawer extends StatefulWidget {
   const TriCountDrawer({super.key});
@@ -11,15 +14,21 @@ class _TriCountDrawerState extends State<TriCountDrawer> {
   int _screenIndex = 0;
 
 
-  void onLogout() {
-    debugPrint("logout");
+  void onLogout() async {
+    await SupabaseManager.supabase.auth.signOut();
+    await SharedPrefService.instance.remove("IdToken");
+    await SharedPrefService.instance.remove("accessToken");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen(),), (route) => false
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return NavigationDrawer(
       onDestinationSelected: (value) =>
-          debugPrint("Selected desitnation: $value"),
+          debugPrint("Selected destination: $value"),
       selectedIndex: _screenIndex,
       children: [
         const Column(
@@ -54,7 +63,7 @@ class _TriCountDrawerState extends State<TriCountDrawer> {
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: TextButton(
-            onPressed: () => onLogout,
+            onPressed: onLogout,
             child: const Text("Logout"),
           ),
         )

@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:tricount/screens/forgot_password.dart';
-import 'package:tricount/screens/register.dart';
-import 'package:tricount/screens/tricounts.dart';
-import 'package:tricount/utils/functions.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tricount/screens/list_tricounts.dart';
+import 'package:tricount/services/supabase_service.dart';
+import 'package:tricount/services/shared_preferences_service.dart';
+import 'package:tricount/widgets/google_sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,109 +16,95 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String? _email;
-  String? _password;
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
-  bool _isHidden = true;
-
-  void onTapEye() {
-    setState(() {
-      _isHidden = !_isHidden;
+  @override
+  void initState() {
+    _authStateSubscription =
+        SupabaseManager.supabase.auth.onAuthStateChange.listen((data) {
+      final session = data.session;
+      if (session != null) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => ListTricountsScreen()));
+      }
     });
+    super.initState();
   }
 
-  void onLogin() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TriCountsScreen(),
-        ),
-      );
+  @override
+  void dispose() {
+    _authStateSubscription.cancel();
+    super.dispose();
+  }
+
+  void _googleSignIn() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId:
+            "180657159333-cvs2e7vleuqnb9kc7ku4brq8b4fd3gsb.apps.googleusercontent.com");
+    final googleUser = await googleSignIn.signIn();
+    final googleAuth = await googleUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
+
+    if (accessToken == null) {
+      throw 'No Access Token found.';
     }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    final google_id = googleUser.id;
+
+    final List user = await SupabaseManager.supabase
+                            .from("User")
+                            .select("*")
+                            .eq("google_id", google_id);
+    if (user.isEmpty) {
+      await SupabaseManager.supabase
+      .from("User")
+      .insert({
+        "username": googleUser.displayName, 
+        "country": "FR", 
+        "email": googleUser.email,
+        "avatar": googleUser.photoUrl,
+        "google_id": google_id,
+        "created_at": DateTime.now().toIso8601String(),
+        "roles": "{ROLE_USER}"
+        });
+    }
+    await SharedPrefService.instance.setValue("idToken", idToken);
+    await SharedPrefService.instance.setValue("accessToken", accessToken);
+
+    await SupabaseManager.supabase.auth.signInWithIdToken(
+      provider: Provider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(height: 80.0),
-                const FlutterLogo(size: 80),
-                const SizedBox(height: 20.0),
-                const Text(
-                  'TriCount',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                TextFormField(
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  validator: validateEmail,
-                  onSaved: (value) => _email = value,
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: GestureDetector(
-                      onTap: onTapEye,
-                      child: _isHidden
-                          ? const Icon(Icons.visibility_off)
-                          : const Icon(Icons.visibility),
-                    ),
-                  ),
-                  obscureText: _isHidden,
-                  onSaved: (value) => _password = value,
-                ),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: onLogin,
-                  child: const Text('Login'),
-                ),
-                const SizedBox(height: 20.0),
-                TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ForgotPasswordScreen(),
-                    ),
-                  ),
-                  child: const Text('Forgot Password?'),
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Don\'t have an account?',
-                  style: TextStyle(fontSize: 16),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterScreen(),
-                    ),
-                  ),
-                  child: Text('Register'),
-                ),
-              ],
-            ),
-          ),
-        ),
+      backgroundColor: Colors.blue,
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/money-bag.png",
+                height: 160.0,
+              ),
+              const SizedBox(height: 15.0),
+              const Text(
+                "Tricount",
+                style: TextStyle(fontSize: 40.0),
+              ),
+              const SizedBox(height: 40.0),
+              GoogleSignInButton(onPressed: _googleSignIn)
+            ]),
       ),
     );
   }

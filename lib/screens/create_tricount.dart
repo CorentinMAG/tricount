@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:tricount/widgets/avatar.dart';
 
 class CreateTricountScreen extends StatefulWidget {
   const CreateTricountScreen({super.key});
@@ -18,8 +18,6 @@ class _CreateTricountScreenState extends State<CreateTricountScreen> {
 
   final List<bool> _currencies = [false, true];
   final List<bool> _labels = [true, false, false, false, false, false];
-  final _picker = ImagePicker();
-  File? _pickedImage;
 
   @override
   void initState() {
@@ -51,18 +49,6 @@ class _CreateTricountScreenState extends State<CreateTricountScreen> {
     });
   }
 
-  void onSelectImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      setState(() {
-        _pickedImage = File(image.path);
-      });
-    } else {
-      debugPrint("No image has been picked");
-    }
-  }
-
   void onCreateTricount() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,18 +74,7 @@ class _CreateTricountScreenState extends State<CreateTricountScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _pickedImage != null
-                      ? Image.file(_pickedImage!, fit: BoxFit.fill)
-                      : DottedBorder(
-                          dashPattern: const [6.7],
-                          borderType: BorderType.RRect,
-                          radius: const Radius.circular(12.0),
-                          padding: const EdgeInsets.all(0.0),
-                          child: IconButton(
-                            icon: const Icon(Icons.image_outlined, size: 60.0),
-                            onPressed: onSelectImage,
-                          ),
-                        ),
+                  Avatar(),
                   const SizedBox(
                     height: 20.0,
                   ),

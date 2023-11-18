@@ -86,7 +86,17 @@ class _TricountScreenState extends State<TricountScreen>
           height: kBottomNavigationBarHeight,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [const Text("My total: "), const Text("My balance: ")],
+            children: [
+              Column(children: [
+                const Text("My total"),
+                const Text("146.35€", style: TextStyle(fontWeight: FontWeight.bold),),
+              ],),
+              Column(children: [
+                const Text("My balance"),
+                const Text("16.59€", style: TextStyle(fontWeight: FontWeight.bold),),
+              ],)
+               
+              ],
           ),
         ),
       ),
