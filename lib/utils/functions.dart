@@ -2,7 +2,9 @@ String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your email";
     }
-    if (!value.contains('@')) {
+
+    final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    if (!emailRegex.hasMatch(value)) {
       return "Invalid email address";
     }
     return null;
@@ -26,6 +28,7 @@ String? validatePassword(String? value) {
 }
 
 String? confirmPassword(String? password, String? value) {
+  print("$password $value");
   if (value == null || value.isEmpty || password == null || password.isEmpty) {
     return "Please enter your password";
   }

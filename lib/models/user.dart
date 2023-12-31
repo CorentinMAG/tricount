@@ -1,6 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-class User {
+class UserModel {
   int? id;
   String username;
   DateTime createdAt = DateTime.now();
@@ -10,28 +10,32 @@ class User {
   String? lastLoginIp;
   DateTime? lastLoginAt;
   String avatar;
+  int googleId;
 
-  User({
+  UserModel({
     this.id,
     required this.email,
     required this.username,
+    required this.googleId,
     avatar
   })
   : avatar = avatar ?? "https://gravatar.com/avatar/${sha256.convert(utf8.encode(email))}.jpg?s=200&d=identicon";
 
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     id: json["id"],
     email: json["email"],
     username: json["username"],
-    avatar: json["avatar"]
+    avatar: json["avatar"],
+    googleId: json["googleId"]
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "email": email,
     "username": username,
-    "avatar": avatar
+    "avatar": avatar,
+    "googleId": googleId
   };
 
 }

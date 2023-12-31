@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tricount/screens/login.dart';
-import 'package:tricount/services/supabase_service.dart';
 import 'package:tricount/services/shared_preferences_service.dart';
 
 class TriCountDrawer extends StatefulWidget {
@@ -15,9 +14,8 @@ class _TriCountDrawerState extends State<TriCountDrawer> {
 
 
   void onLogout() async {
-    await SupabaseManager.supabase.auth.signOut();
-    await SharedPrefService.instance.remove("IdToken");
-    await SharedPrefService.instance.remove("accessToken");
+    await SharedPrefService.instance.remove("token");
+    await SharedPrefService.instance.remove("refresh_token");
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen(),), (route) => false

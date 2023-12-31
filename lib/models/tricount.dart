@@ -9,9 +9,9 @@ class Tricount {
   TricountLabel label;
   Currency currency;
   Uri? uri;
-  List<User> users = [];
+  List<UserModel> users = [];
   List<Transaction> transactions = [];
-  User owner;
+  UserModel owner;
 
   Tricount({
     required this.owner,

@@ -1,8 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:tricount/services/supabase_service.dart';
 
 class Avatar extends StatefulWidget {
   String? imageUrl;
@@ -27,38 +25,38 @@ class _AvatarState extends State<Avatar> {
       _isLoading = true;
     });
 
-    try {
-      final bytes = await imageFile.readAsBytes();
-      final fileExt = imageFile.path.split(".").last;
-      final fileName = "${DateTime.now().toIso8601String()}.$fileExt";
-      await SupabaseManager.supabase.storage
-          .from("TricountAvatar")
-          .uploadBinary(
-            fileName,
-            bytes,
-            fileOptions: FileOptions(contentType: imageFile.mimeType),
-          );
-      final imageUrlResponse = await SupabaseManager.supabase.storage
-          .from("TricountAvatar")
-          .createSignedUrl(fileName, 60 * 60 * 24 * 365 * 10);
-      setState(() {
-        widget.imageUrl = imageUrlResponse;
-      });
-    } on StorageException catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(error.message),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ));
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text("Unexpected error occured"),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ));
-      }
-    }
+    // try {
+    //   final bytes = await imageFile.readAsBytes();
+    //   final fileExt = imageFile.path.split(".").last;
+    //   final fileName = "${DateTime.now().toIso8601String()}.$fileExt";
+    //   // await SupabaseManager.supabase.storage
+    //   //     .from("TricountAvatar")
+    //   //     .uploadBinary(
+    //   //       fileName,
+    //   //       bytes,
+    //   //       fileOptions: FileOptions(contentType: imageFile.mimeType),
+    //   //     );
+    //   // final imageUrlResponse = await SupabaseManager.supabase.storage
+    //   //     .from("TricountAvatar")
+    //   //     .createSignedUrl(fileName, 60 * 60 * 24 * 365 * 10);
+    //   // setState(() {
+    //   //   widget.imageUrl = imageUrlResponse;
+    //   // });
+    // } on StorageException catch (error) {
+    //   if (mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //       content: Text(error.message),
+    //       backgroundColor: Theme.of(context).colorScheme.error,
+    //     ));
+    //   }
+    // } catch (error) {
+    //   if (mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //       content: const Text("Unexpected error occured"),
+    //       backgroundColor: Theme.of(context).colorScheme.error,
+    //     ));
+    //   }
+    // }
 
     setState(() {
       _isLoading = false;

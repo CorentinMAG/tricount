@@ -8,7 +8,11 @@ class SharedPrefService {
   late SharedPreferences _prefs;
 
   Future<void> initialize() async {
-    _prefs = await SharedPreferences.getInstance();  
+    _prefs = await SharedPreferences.getInstance();
+    print("get shared preferences");
+    _prefs.getKeys().forEach((key){
+      print(key+"="+_prefs.get(key).toString());
+    });
   }
 
   String? getValue(String name) => _prefs.getString(name);

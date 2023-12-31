@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tricount/screens/splash.dart';
-import 'package:tricount/services/supabase_service.dart';
+import 'package:tricount/screens/login.dart';
+import 'package:tricount/services/api_service.dart';
 import 'package:tricount/services/shared_preferences_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await SharedPrefService.instance.initialize();
-  await SupabaseManager.instance.initialize();
+  await ApiService.instance.initialize();
 
   runApp(const MainApp());
 }
@@ -20,7 +21,7 @@ class MainApp extends StatelessWidget {
       title: "Tricount",
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
-      home: SplashScreen()
+      home: LoginScreen()
     );
   }
 }

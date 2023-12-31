@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:tricount/screens/login.dart';
 import 'package:tricount/screens/list_tricounts.dart';
-import 'package:tricount/services/supabase_service.dart';
+import 'package:tricount/services/api_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -24,10 +25,14 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    final session = SupabaseManager.supabase.auth.currentSession;
-    if (session != null) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ListTricountsScreen()));
-    } else {
+    try {
+      final response = await ApiService.instance.get("/me");
+      if (response.statusCode == 200) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ListTricountsScreen()));
+      } else {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
+    } on DioException catch (e) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
