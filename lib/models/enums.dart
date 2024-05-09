@@ -1,9 +1,15 @@
 enum Currency {
-  euro, dollars
+  euro, 
+  dollars
 }
 
 enum TricountLabel {
-  holidays, work, project, event, trip, others
+  event,
+  holidays,
+  other,
+  project,
+  trip,
+  work
 }
 
 enum TransactionLabel {

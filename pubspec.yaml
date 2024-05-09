@@ -10,16 +10,21 @@ dependencies:
   crypto: ^3.0.3
   dio: ^5.4.0
   dotted_border: ^2.1.0
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.5
   google_sign_in: ^6.1.6
   http: ^1.1.0
   image_picker: ^1.0.4
+  jwt_decoder: ^2.0.1
   localstorage: ^4.0.1+4
   mysql_client: ^0.0.27
+  provider: ^6.1.1
   qr_code_scanner: ^1.0.1
   qr_flutter: ^4.1.0
   shared_preferences: ^2.2.2
+  skeletonizer: ^1.1.2+1
 
 dev_dependencies:
   flutter_test:

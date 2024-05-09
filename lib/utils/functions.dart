@@ -28,7 +28,6 @@ String? validatePassword(String? value) {
 }
 
 String? confirmPassword(String? password, String? value) {
-  print("$password $value");
   if (value == null || value.isEmpty || password == null || password.isEmpty) {
     return "Please enter your password";
   }

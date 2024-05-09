@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:tricount/models/tricount.dart';
 import 'package:tricount/screens/tricount.dart';
+import 'package:tricount/utils/constants.dart';
+import 'package:tricount/widgets/tricount/label.dart';
 
-class TriCountTile extends StatelessWidget {
-  const TriCountTile({super.key});
+class TricountTile extends StatelessWidget {
+  final Tricount tricount;
+  const TricountTile({super.key, required this.tricount});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(20.0),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => TricountScreen())),
-      child: const Card(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TricountScreen())),
+      child: Card(
           child: Padding(
         padding: EdgeInsets.all(20.0),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              tricount.imageName != null ?
               ClipOval(
-                child: Image(
-                  image: AssetImage("assets/images/money-bag.png"),
-                  width: 60.0,
-                  height: 60.0,
-                ),
+                child: Image.network('${Environment.baseUrl.toString()}${tricount.uri}/${tricount.imageName}', fit: BoxFit.cover, width: 60.0, height: 60.0,)
+              ) : 
+              const ClipOval(
+                child: Image(image: AssetImage("assets/images/money-bag.png"), width: 60.0, height: 60.0)
               ),
-              SizedBox(
+              const SizedBox(
                 width: 35.0,
               ),
               Expanded(
@@ -32,14 +36,14 @@ class TriCountTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "My first Tricount !",
+                      tricount.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                     ),
                     Text(
-                      "Created by: Corentin MAGYAR",
+                      "Created by: ${tricount.owner.username}",
                       style:
                           TextStyle(fontStyle: FontStyle.italic, fontSize: 10.0),
                     ),
@@ -47,7 +51,7 @@ class TriCountTile extends StatelessWidget {
                       height: 15.0,
                     ),
                     Text(
-                      "This is my first tricount and I'm so happy to share it with my best friends",
+                      tricount.description!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 12.0),
@@ -55,20 +59,12 @@ class TriCountTile extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                      Chip(
-                        backgroundColor: Colors.amber,
-                        label: const Text("Holidays",
-                            style: TextStyle(fontSize: 12)),
-                        avatar: CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/hollidays.png"),
-                        ),
-                      ),
+                      Label(label: tricount.label),
                       Chip(
                         backgroundColor: Colors.lightBlue,
-                        label: const Text("4 Peoples",
-                            style: TextStyle(fontSize: 12)),
-                        avatar: Icon(Icons.people)
+                        label: Text("${tricount.users.length + 1} Peoples",
+                            style: const TextStyle(fontSize: 12)),
+                        avatar: const Icon(Icons.people)
                       )
                     ]),
                   ],

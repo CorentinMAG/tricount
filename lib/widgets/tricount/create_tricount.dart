@@ -1,7 +1,5 @@
-import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:tricount/models/tricount.dart';
 import 'package:tricount/widgets/avatar.dart';
 
 class CreateTricountScreen extends StatefulWidget {
@@ -119,7 +117,7 @@ class _CreateTricountScreenState extends State<CreateTricountScreen> {
                             width: 40.0, height: 40.0, fit: BoxFit.cover),
                         Image.asset("assets/images/other.png",
                             width: 40.0, height: 40.0, fit: BoxFit.cover),
-                        Image.asset("assets/images/hollidays.png",
+                        Image.asset("assets/images/holiday.png",
                             width: 40.0, height: 40.0, fit: BoxFit.cover),
                         Image.asset("assets/images/trip.png",
                             width: 40.0, height: 40.0, fit: BoxFit.cover),

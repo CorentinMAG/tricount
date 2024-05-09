@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:tricount/screens/login.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tricount/repository/tricount_repository.dart';
+import 'package:tricount/screens/splash.dart';
+import 'package:tricount/observer/observer.dart';
 import 'package:tricount/services/api_service.dart';
+import 'package:tricount/services/authentication_service.dart';
 import 'package:tricount/services/shared_preferences_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+  Bloc.observer = const AppObserver();
+
   await SharedPrefService.instance.initialize();
   await ApiService.instance.initialize();
 
@@ -17,11 +22,18 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Tricount",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
-      home: LoginScreen()
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthenticationService>(
+            create: (context) => AuthenticationService()),
+        RepositoryProvider<TricountRepository>(
+            create: (context) => TricountRepository())
+      ],
+      child: MaterialApp(
+          title: "Tricount",
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light(useMaterial3: true),
+          home: const SplashScreen()),
     );
   }
 }
