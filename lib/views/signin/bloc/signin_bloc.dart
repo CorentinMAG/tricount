@@ -14,10 +14,13 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
   }
 
   Future<void> _onSignin(SigninRequestEvent event, Emitter<SigninState> emit) async {
+    emit(const SigninLoadingState(isLoading: true));
     try {
       await _auth.signInWithEmailAndPassword(email: event.email, password: event.password);
     } catch (e) {
       emit(SigninFailedState(message: e.toString()));
+    } finally {
+      emit(const SigninLoadingState(isLoading: false));
     }
   }
 }

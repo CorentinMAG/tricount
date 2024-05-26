@@ -12,21 +12,31 @@ class TricountTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(20.0),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TricountScreen())),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => TricountScreen(tricount: tricount),
+        ),
+      ),
       child: Card(
           child: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              tricount.imageName != null ?
-              ClipOval(
-                child: Image.network('${Environment.baseUrl.toString()}${tricount.uri}/${tricount.imageName}', fit: BoxFit.cover, width: 60.0, height: 60.0,)
-              ) : 
-              const ClipOval(
-                child: Image(image: AssetImage("assets/images/money-bag.png"), width: 60.0, height: 60.0)
-              ),
+              tricount.imageName != null
+                  ? ClipOval(
+                      child: Image.network(
+                      '${Environment.baseUrl.toString()}${tricount.uri}/${tricount.imageName}',
+                      fit: BoxFit.cover,
+                      width: 60.0,
+                      height: 60.0,
+                    ))
+                  : const ClipOval(
+                      child: Image(
+                          image: AssetImage("assets/images/money-bag.png"),
+                          width: 60.0,
+                          height: 60.0)),
               const SizedBox(
                 width: 35.0,
               ),
@@ -39,34 +49,34 @@ class TricountTile extends StatelessWidget {
                       tricount.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18.0),
                     ),
                     Text(
                       "Created by: ${tricount.owner.username}",
-                      style:
-                          TextStyle(fontStyle: FontStyle.italic, fontSize: 10.0),
+                      style: const TextStyle(
+                          fontStyle: FontStyle.italic, fontSize: 10.0),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15.0,
                     ),
                     Text(
                       tricount.description!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12.0),
+                      style: const TextStyle(fontSize: 12.0),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                      Label(label: tricount.label),
-                      Chip(
-                        backgroundColor: Colors.lightBlue,
-                        label: Text("${tricount.users.length + 1} Peoples",
-                            style: const TextStyle(fontSize: 12)),
-                        avatar: const Icon(Icons.people)
-                      )
-                    ]),
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Label(label: tricount.label),
+                          Chip(
+                              backgroundColor: Colors.lightBlue,
+                              label: Text(
+                                  "${tricount.users.length + 1} Peoples",
+                                  style: const TextStyle(fontSize: 12)),
+                              avatar: const Icon(Icons.people))
+                        ]),
                   ],
                 ),
               )

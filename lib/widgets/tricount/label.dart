@@ -8,7 +8,6 @@ class Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(label);
 
     switch(label) {
       case TricountLabel.event:
@@ -49,12 +48,14 @@ class Label extends StatelessWidget {
   }
 
   Widget _buildOtherLabel() {
-    return const Chip(
-      backgroundColor: Colors.blue,
-      label:  Text("Other", style: TextStyle(fontSize: 12)),
-      avatar:  CircleAvatar(
-        backgroundImage: AssetImage("assets/images/other.png"),
-      )
+    return Container(
+      child: const Chip(
+        backgroundColor: Colors.blue,
+        label:  Text("Other", style: TextStyle(fontSize: 12)),
+        avatar:  CircleAvatar(
+          backgroundImage: AssetImage("assets/images/other.png"),
+        )
+      ),
     );
   }
 
@@ -63,7 +64,7 @@ class Label extends StatelessWidget {
       backgroundColor: Colors.red,
       label:  Text("Project", style: TextStyle(fontSize: 12)),
       avatar:  CircleAvatar(
-        backgroundImage: AssetImage("assets/images/projet.png"),
+        backgroundImage: AssetImage("assets/images/project.png"),
       )
     );
   }

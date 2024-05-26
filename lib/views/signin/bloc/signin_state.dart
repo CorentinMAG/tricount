@@ -20,6 +20,15 @@ class SigninRequest extends SigninState {
 
 }
 
+class SigninLoadingState extends SigninState {
+  final bool isLoading;
+
+  const SigninLoadingState({required this.isLoading});
+
+  @override
+  List<Object> get props => [isLoading];
+}
+
 class SigninFailedState extends SigninState {
   final String message;
 

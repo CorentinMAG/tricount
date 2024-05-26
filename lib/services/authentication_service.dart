@@ -44,5 +44,5 @@ class AuthenticationService {
     await _authenticationRepository.requestPasswordReset(email: email);
   }
 
-  void dispose() => _userController.close();
+  void close() => _userController.close();
 }

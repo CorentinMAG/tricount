@@ -2,22 +2,35 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tricount/views/reset/cubit/reset_cubit.dart';
-import 'package:tricount/views/reset/view/reset.dart';
+import 'package:tricount/views/reset/views/reset.dart';
 import 'package:tricount/services/authentication_service.dart';
 import 'package:tricount/views/signup/bloc/signup_bloc.dart';
-import 'package:tricount/views/signup/view/signup.dart';
+import 'package:tricount/views/signup/views/signup.dart';
 import 'package:tricount/utils/functions.dart';
 import 'package:tricount/views/signin/bloc/signin_bloc.dart';
 
-class SigninScreen extends StatefulWidget {
+class SigninScreen extends StatelessWidget {
   const SigninScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<SigninBloc>(
+      create: (context) => SigninBloc(
+        authenticationRepository: context.read<AuthenticationService>(),
+      ),
+      child: const SigninView(),
+    );
+  }
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class SigninView extends StatefulWidget {
+  const SigninView({super.key});
+
+  @override
+  State<SigninView> createState() => _SigninViewState();
+}
+
+class _SigninViewState extends State<SigninView> {
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
@@ -52,8 +65,11 @@ class _SigninScreenState extends State<SigninScreen> {
     return BlocListener<SigninBloc, SigninState>(
       listener: (context, state) {
         if (state is SigninFailedState) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -102,27 +118,27 @@ class _SigninScreenState extends State<SigninScreen> {
                       onSaved: (value) => _password = value,
                     ),
                     const SizedBox(height: 20.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: onLogin,
-                          child: const Text('Login'),
-                        ),
-                        TextButton(
-                            onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BlocProvider(
-                                      create: (context) => ResetCubit(
-                                          authenticationRepository: context
-                                              .read<AuthenticationService>()),
-                                      child: ResetScreen(),
-                                    ),
-                                  ),
-                                ),
-                            child: const Text("Forgot password?"))
-                      ],
+                    BlocBuilder<SigninBloc, SigninState>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed:
+                                  state is SigninLoadingState && state.isLoading
+                                      ? null
+                                      : onLogin,
+                              child: const Text('Login'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).push(
+                                ResetPage.route(),
+                              ),
+                              child: const Text("Forgot password?"),
+                            )
+                          ],
+                        );
+                      },
                     ),
                     const SizedBox(height: 50.0),
                     const Text(
@@ -132,14 +148,17 @@ class _SigninScreenState extends State<SigninScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                      create: (context) => SignupBloc(
-                                          authenticationRepository: context
-                                              .read<AuthenticationService>()),
-                                      child: SignupScreen(),
-                                    )));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (context) => SignupBloc(
+                                authenticationRepository:
+                                    context.read<AuthenticationService>(),
+                              ),
+                              child: const SignupScreen(),
+                            ),
+                          ),
+                        );
                       },
                       child: const Text('Register'),
                     ),

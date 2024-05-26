@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tricount/views/home/cubit/home_cubit.dart';
+import 'package:tricount/views/tricounts/bloc/tricount_bloc.dart';
 
-class TriCountAppBar extends StatefulWidget implements PreferredSizeWidget {
+
+class TriCountAppBar extends StatelessWidget implements PreferredSizeWidget {
   String title;
   void Function() onPressedQRCode;
   TabBar? bottom;
@@ -9,51 +13,42 @@ class TriCountAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => bottom != null ? const Size.fromHeight(kToolbarHeight) * 2  : const Size.fromHeight(kToolbarHeight);
 
-  @override
-  State<TriCountAppBar> createState() => _TriCountAppBarState();
-}
-
-class _TriCountAppBarState extends State<TriCountAppBar> {
-  bool _isSearchMode = false;
-  TextEditingController _searchController = TextEditingController();
-
-  void onPressedSearch() {
-    setState(() {
-      _isSearchMode = !_isSearchMode;
-    });
-  }
-
-  void onChangedText(String text) {
-    debugPrint("search: $text");
-  }
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: _isSearchMode
+    final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
+
+    if (selectedTab == HomeTab.tricounts) {
+      final state = context.watch<TricountBloc>().state;
+      return AppBar(
+      title: state.search
           ? TextField(
               autofocus: true,
-              controller: _searchController,
               decoration: const InputDecoration(
                 hintText: "Search...",
                 border: InputBorder.none,
               ),
-              onChanged: onChangedText,
+              onChanged: (text) => context.read<TricountBloc>().add(TricountFilterChanged(text)),
             )
-          : Text(widget.title),
-      bottom: widget.bottom,
+          : Text(title),
+      bottom: bottom,
       actions: [
         IconButton(
-          onPressed: onPressedSearch,
-          icon: _isSearchMode
+          onPressed: () => context.read<TricountBloc>().add(const TricountToggleFilterMode()),
+          icon: state.search
               ? const Icon(Icons.cancel)
               : const Icon(Icons.search),
         ),
         IconButton(
-          onPressed: widget.onPressedQRCode,
+          onPressed: onPressedQRCode,
           icon: const Icon(Icons.qr_code)
         ),
       ],
     );
+
+    } else {
+      return AppBar();
+    }
+
   }
 }

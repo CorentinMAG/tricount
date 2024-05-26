@@ -32,7 +32,10 @@ class ApiService {
     _dio.interceptors.add(AuthenticationInterceptor());
   }
 
-  Future<Response> post(String path, Map<String, dynamic> data) async {
+  Future<Response> post(String path, Map<String, dynamic> data, {bool formdata = false}) async {
+    if (formdata) {
+      return _dio.post(path, data: FormData.fromMap(data));
+    }
     return _dio.post(path, data: jsonEncode(data));
   }
 
@@ -45,6 +48,10 @@ class ApiService {
 
   Future<Response> fetch(RequestOptions options) async {
     return _dio.fetch(options);
+  }
+
+  Future<Response> delete(String path) async {
+    return _dio.delete(path);
   }
 }
 

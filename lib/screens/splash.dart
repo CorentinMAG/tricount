@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tricount/bloc/auth/auth_bloc.dart';
 import 'package:tricount/bloc/auth/auth_state.dart';
-import 'package:tricount/screens/home.dart';
 import 'package:tricount/services/authentication_service.dart';
-import 'package:tricount/views/signin/bloc/signin_bloc.dart';
-import 'package:tricount/views/signin/view/signin.dart';
+import 'package:tricount/views/home/views/home.dart';
+import 'package:tricount/views/signin/views/signin.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,12 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
           if (state.status == AuthenticationStatus.authenticated) {
             return HomeScreen(user: state.user!);
           } else {
-            return BlocProvider<SigninBloc>(
-              create: (context) => SigninBloc(
-                  authenticationRepository:
-                      context.read<AuthenticationService>(),),
-              child: const SigninScreen(),
-            );
+            return const SigninScreen();
           }
         },
       ),

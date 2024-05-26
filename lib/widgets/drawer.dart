@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tricount/bloc/auth/auth_bloc.dart';
 import 'package:tricount/bloc/auth/auth_event.dart';
-import 'package:tricount/services/authentication_service.dart';
 import 'package:tricount/services/shared_preferences_service.dart';
 
 class TriCountDrawer extends StatefulWidget {

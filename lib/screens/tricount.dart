@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tricount/models/tricount.dart';
 import 'package:tricount/screens/create_transaction.dart';
 import 'package:tricount/widgets/appbar.dart';
 import 'package:tricount/widgets/qrcode.dart';
 
 class TricountScreen extends StatefulWidget {
-  const TricountScreen({super.key});
+  Tricount tricount;
+  TricountScreen({super.key, required this.tricount});
 
   @override
   State<TricountScreen> createState() => _TricountScreenState();
@@ -34,12 +36,15 @@ class _TricountScreenState extends State<TricountScreen>
           ),
         ),
         builder: (context) => DraggableScrollableSheet(
-            expand: false,
-            initialChildSize: 0.5,
-            maxChildSize: 0.8,
-            minChildSize: 0.1,
-            builder: (context, scrollController) => SingleChildScrollView(
-                controller: scrollController, child: const QRCode())),
+              expand: false,
+              initialChildSize: 0.5,
+              maxChildSize: 0.8,
+              minChildSize: 0.1,
+              builder: (context, scrollController) => SingleChildScrollView(
+                controller: scrollController,
+                child: QRCode(url: widget.tricount.joinUri!),
+              ),
+            ),
         showDragHandle: true,
         isScrollControlled: true);
   }
@@ -47,7 +52,7 @@ class _TricountScreenState extends State<TricountScreen>
   void onPressedCreateTransaction() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => CreateTransactionScreen(),
+        builder: (context) => const CreateTransactionScreen(),
       ),
     );
   }
@@ -65,10 +70,7 @@ class _TricountScreenState extends State<TricountScreen>
               icon: Icon(Icons.swap_vert),
               text: "Transactions",
             ),
-            Tab(
-              icon: Icon(Icons.balance),
-              text: "Balance"
-            ),
+            Tab(icon: Icon(Icons.balance), text: "Balance"),
           ],
         ),
       ),
@@ -87,16 +89,25 @@ class _TricountScreenState extends State<TricountScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Column(children: [
-                const Text("My total"),
-                const Text("146.35€", style: TextStyle(fontWeight: FontWeight.bold),),
-              ],),
-              Column(children: [
-                const Text("My balance"),
-                const Text("16.59€", style: TextStyle(fontWeight: FontWeight.bold),),
-              ],)
-               
-              ],
+              Column(
+                children: [
+                  const Text("My total"),
+                  const Text(
+                    "146.35€",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const Text("My balance"),
+                  const Text(
+                    "16.59€",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       ),

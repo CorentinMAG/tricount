@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tricount/services/authentication_service.dart';
 import 'package:tricount/views/reset/cubit/reset_cubit.dart';
 
-class ResetScreen extends StatelessWidget {
-  ResetScreen({super.key});
+class ResetPage extends StatelessWidget {
+  ResetPage({super.key});
 
   String? _email;
+
+  static Route<void> route() {
+    return MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => BlocProvider(
+        create: (context) => ResetCubit(
+            authenticationRepository:
+                context.read<
+                    AuthenticationService>()),
+        child: ResetPage(),
+      ),
+    );
+  }
 
 
   @override
