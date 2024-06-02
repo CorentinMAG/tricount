@@ -14,10 +14,18 @@ import 'package:tricount/views/tricounts/views/tricounts.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserModel user;
-  const HomeScreen({super.key, required this.user});
+  HomeScreen({super.key, required this.user});
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
+
+  Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
+    return {
+      "/": (context) => HomeView(user: user)
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
+    var routeBuilders = _routeBuilders(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider<TricountBloc>(
@@ -29,7 +37,14 @@ class HomeScreen extends StatelessWidget {
           create: (_) => HomeCubit(),
         )
       ],
-      child: HomeView(user: user),
+      //child: HomeView(user: user),
+      child: Navigator(
+        key: _navigatorKey,
+        initialRoute: "/",
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(builder: (context) => routeBuilders[settings.name]!(context));
+        },
+      )
     );
   }
 }

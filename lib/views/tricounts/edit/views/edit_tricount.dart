@@ -37,7 +37,6 @@ class EditTricountView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditTricountBloc>().state;
-    print("BUILD");
 
     return BlocListener<EditTricountBloc, EditTricountState>(
       listener: (context, state) {

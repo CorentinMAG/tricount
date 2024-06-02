@@ -44,33 +44,32 @@ class EditTricountBloc extends Bloc<EditTricountEvent, EditTricountState> {
   }
 
   void _onTitleChanged(EditTricountTitleChanged event, Emitter<EditTricountState> emit) {
-    state.tricount.title = event.title;
-    emit(state.copyWith(tricount: state.tricount));
+    final Tricount tricount = state.tricount.copyWith(title: event.title);
+    emit(state.copyWith(tricount: tricount));
   }
   void _onDescriptionChanged(EditTricountDescriptionChanged event, Emitter<EditTricountState> emit) {
-    state.tricount.description = event.description;
-    emit(state.copyWith(tricount: state.tricount));
+    final Tricount tricount = state.tricount.copyWith(description: event.description);
+    emit(state.copyWith(tricount: tricount));
   }
   void _onCurrencyChanged(EditTricountCurrencyChanged event, Emitter<EditTricountState> emit) {
     final idx = event.idx;
     final currencies = List.generate(2, (_) => false);
     currencies[idx] = !currencies[idx];
-    state.tricount.currency = Currency.values[idx];
+    final Tricount tricount = state.tricount.copyWith(currency: Currency.values[idx]);
 
-    emit(state.copyWith(tricount: state.tricount, currencies: currencies));
+    emit(state.copyWith(tricount: tricount, currencies: currencies));
   }
   void _onLabelChanged(EditTricountLabelChanged event, Emitter<EditTricountState> emit) {
     final idx = event.idx;
     final labels = List.generate(6, (_) => false);
     labels[idx] = !labels[idx];
-    state.tricount.label = TricountLabel.values[idx];
+    final Tricount tricount = state.tricount.copyWith(label: TricountLabel.values[idx]);
 
-    emit(state.copyWith(tricount: state.tricount, labels: labels));
+    emit(state.copyWith(tricount: tricount, labels: labels));
   }
 
   void _onImageChanged(EditTricountImageChanged event, Emitter<EditTricountState> emit) {
-    state.tricount.image = event.image;
-
-    emit(state.copyWith(tricount: state.tricount, currencies: [true, false]));
+    final Tricount tricount = state.tricount.copyWith(image: event.image);
+    emit(state.copyWith(tricount: tricount));
   }
 }
